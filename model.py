@@ -11,9 +11,34 @@ db = SQLAlchemy()
 class Human(db.Model):
     """Data model for a human."""
 
+    __tablename__ = 'humans'
+
+    human_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fname = db.Column(db.String(20), nullable=False, unique=True)
+    lname = db.Column(db.String(20), nullable=False, unique=True)
+    email = db.Column(db.String(40), nullable=False, unique=True)
+
+    animal = db.relationship('Animal')
+
+    def __repr__(self):
+        return f'<Human human_id={self.human_id} fname={self.fname} lname={self.lname} email={self.email}>'
+
 
 class Animal(db.Model):
-    """Data model for an animal."""
+
+    __tablename__ = 'animals'
+
+    animal_id = db.Column(db.Integer, primary_key=True,
+                          nullable=False, autoincrement=True)
+    human_id = db.Column(db.Integer, db.ForeignKey('humans.human_id'))
+    name = db.Column(db.String(30), nullable=False, unique=True)
+    animal_species = db.Column(db.String, nullable=False)
+    birth_year = db.Column(db.Integer, nullable=False)
+
+    human = db.relationship('Human')
+
+    def __repr__(self):
+        return f'<Animal animal_id={self.animal_id} human_id={self.human_id} name={self.name} animal_species={self.animal_species} birth_year={self.birth_year}>'
 
 
 def connect_to_db(app):
