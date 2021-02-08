@@ -35,7 +35,7 @@ class Animal(db.Model):
     animal_species = db.Column(db.String, nullable=False)
     birth_year = db.Column(db.Integer, nullable=False)
 
-    human = db.relationship('Human')
+    human = db.relationship('Human', backref='animals')
 
     def __repr__(self):
         return f'<Animal animal_id={self.animal_id} human_id={self.human_id} name={self.name} animal_species={self.animal_species} birth_year={self.birth_year}>'

@@ -11,6 +11,8 @@ def get_human_2(human, fname, lname):
     """Return the human with the id 2."""
     return Human.query.filter_by(human_id=2).all()
 
+    # or return Human.query.get(2)
+
 
 def get_first_fish():
     """Return the FIRST animal with the species 'fish'."""
@@ -40,25 +42,19 @@ def get_fish_or_rabbits():
 
 
 def print_directory():
-    """Output a list of humans and their animals.
 
-    For example:
+    # directory = Animal.query.options(db.joinedload('humans')).all()
 
-    >>> print_directory()
-    Justin Time
-    - Peter (rabbit)
-    - Peppa (pig)
-    Carmen Sandiego
-    - Blub (fish)
+    # humans = Animal.query.options(db.joinedload('humans')).all()
+    humans = Human.query.options(db.joinedload('animals')).all()
 
-    You may only use ONE query to retrieve initial data. (Hint: leverage a
-    SQLAlchemy relationship to retrieve additional information)
-    """
-    directory = Animal.query.options(db.joinedload('human')).all()
+    for human in humans:
+        print(f'{human.fname} {human.lname}')
+        for animal in human.animals:
+            print(f'- {animal.name} ({animal.animal_species})')
 
-    for fname, lname, name, animal_species in directory:
-        print(
-            f"{directory.fname}{directory.lname} /n -{directory.name} '({directory.animal_species})'")
+
+print_directory()
 
 
 def find_humans_by_animal_species(species):
@@ -73,11 +69,15 @@ def find_humans_by_animal_species(species):
     don't have to do it with pure SQLAlchemy)
     """
     directory = db.session.query(Animal, Human).join(Human).all()
-    # either/or?
-    directory = Animal.query.options(db.joinedload('human')).all()
+    # or would this work better? directory = Animal.query.options(db.joinedload('human')).all()
 
     species = animal_species
     humans = []
+
+    if species in Human.human_id:
+        humans.append(human_id)
+
+    return humans
 
 
 if __name__ == '__main__':
